@@ -13,7 +13,7 @@ def cadastrarCliente():
 
     # Recuperar os dados da requisição
     nome = str(req_data['nome'])
-    usuario = str(req_data['usuario'])
+    email = str(req_data['usuario'])
     senha = str(req_data['senha'])
 
     # Persistência dos dados
@@ -22,9 +22,9 @@ def cadastrarCliente():
 
     # inserindo dados na tabela
     cursor.execute("""
-      INSERT INTO tb_cliente (nome, usuario, senha)
+      INSERT INTO tb_cliente (nome, email, senha)
       VALUES (?,?,?)
-    """, (nome, usuario, senha))
+    """, (nome, email, senha))
 
     conn.commit()
 
@@ -50,7 +50,6 @@ def consultarCliente():
     # Lista de Pessoas.
     pessoas = []
 
-
     for linha in cursor.fetchall():
         nome = str(linha[1])
         usuario = str(linha[2])
@@ -67,6 +66,36 @@ def consultarCliente():
 
     return resp
 
+@app.route("/clientes/<int:id>")
+def consultarClientePorId(id):
+
+    pessoa = []
+
+    conn = sqlite3.connect('bd_loja.db')
+    cursor = conn.cursor()
+
+    # lendo os dados
+    cursor.execute("""
+          SELECT * FROM tb_cliente WHERE id = %d;
+        """%(id))
+
+    resultSet = cursor.fetchone()
+
+    if resultSet is not None:
+        id = str(resultSet[0])
+        nome = str(resultSet[1])
+        usuario = str(resultSet[2])
+        senha = str(resultSet[3])
+
+        # Pessoa.
+        pessoa = {'id': id,'nome': nome, 'usuario': usuario, 'senha': senha}
+
+    conn.close()
+
+    resp = jsonify(pessoa)
+    resp.status_code = 201
+
+    return resp
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

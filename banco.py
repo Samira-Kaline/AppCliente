@@ -10,7 +10,7 @@ cursor.execute("""
 CREATE TABLE tb_cliente (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,       
-        usuario VARCHAR(20) NOT NULL,
+        email VARCHAR(40) NOT NULL,
         senha VARCHAR(15) NOT NULL        
 );
 """)
