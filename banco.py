@@ -9,12 +9,12 @@ cursor = conn.cursor()
 cursor.execute("""
 CREATE TABLE tb_cliente (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,       
+        nome TEXT NOT NULL,
         email VARCHAR(40) NOT NULL,
-        senha VARCHAR(15) NOT NULL        
+        senha VARCHAR(15) NOT NULL
 );
 """)
-
+# Finalizando o processo de criação do banco.
 print('Tabela criada com sucesso.')
 # desconectando...
 conn.close()
