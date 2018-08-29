@@ -5,7 +5,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-@app.route('/cliente', methods=['POST']) #POST requests will be blocked
+@app.route('/cliente-cadastro', methods=['POST']) #POST requests will be blocked
 def cadastrarCliente():
 
     print("Entrou na função")
