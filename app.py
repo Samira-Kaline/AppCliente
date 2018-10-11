@@ -67,6 +67,36 @@ def listarCampi():
 
     return resp
 
+@app.route('/campi/nome/<nome_campus>', methods=['GET'])
+def consultarCampusPorNome(nome_campus):
+
+    conn = sqlite3.connect('bd_nutrif.db')
+    cursor = conn.cursor()
+
+    # lendo os dados
+    query = "SELECT * FROM tb_campus WHERE nome_campus LIKE '%{}%'".format(nome_campus)
+    cursor.execute(query)
+
+    # Lista de Campi.
+    campi = []
+
+    for linha in cursor.fetchall():
+        id = str(linha[0])
+        nome_campus = str(linha[1])
+        cidade = str(linha[2])
+        sigla = str(linha[3])
+        # Campi.
+        campus = {'id': id, 'nome': nome_campus, 'cidade': cidade,'sigla': sigla}
+        # Adicionar a campus a lista.
+        campi.append(campus)
+
+    conn.close()
+
+    resp = jsonify(Campus_Pesquisado=campi)
+    resp.status_code = 201
+
+    return resp
+
 @app.route("/campi/<int:id>", methods=['GET'])#GET: retornar a entidade por id.
 def consultarCampusPorId(id):
     campus = []
@@ -121,7 +151,7 @@ def removerCampusPorId(id):
 
     return resp
 
-@app.route('/alunos', methods=['POST']) #POST requests will be blocked
+@app.route('/alunos', methods=['POST'])
 def cadastrarAluno():
 
     print("Entrou na função")
@@ -156,7 +186,7 @@ def cadastrarAluno():
     return resp
 
 
-@app.route('/alunos', methods=['GET']) #GET: listar todos.
+@app.route('/alunos', methods=['GET'])
 def listarAlunos():
     conn = sqlite3.connect('bd_nutrif.db')
     cursor = conn.cursor()
@@ -165,7 +195,7 @@ def listarAlunos():
     cursor.execute("""
       SELECT * FROM tb_aluno;
     """)
-    # Lista de Pessoas.
+    # Lista de Alunos.
     Lista_Alunos = []
 
     for linha in cursor.fetchall():
@@ -176,9 +206,8 @@ def listarAlunos():
         altura = str(linha[4])
         peso = str(linha[5])
 
-        # Pessoa.
         pessoa = {'id': id_aluno, 'matricula': matricula_aluno, 'nome': nome, 'nascimento': nascimento, 'altura': altura, 'peso': peso}
-        # Adicionar a pessoa a lista.
+        # Adicionar a aluno a lista.
         Lista_Alunos.append(pessoa)
 
     conn.close()
@@ -188,7 +217,38 @@ def listarAlunos():
 
     return resp
 
-@app.route('/alunos/<int:id>', methods=['GET']) #GET: retornar a entidade por id.
+@app.route('/aluno/nome/<nome>', methods=['GET'])
+def consultarAlunoPorNome(nome):
+
+    conn = sqlite3.connect('bd_nutrif.db')
+    cursor = conn.cursor()
+
+    # lendo os dados
+    query = "SELECT * FROM tb_aluno WHERE nome LIKE '%{}%'".format(nome)
+    cursor.execute(query)
+    # Lista de Alunos.
+    Lista_Alunos = []
+
+    for linha in cursor.fetchall():
+        id_aluno = str(linha[0])
+        matricula_aluno = str(linha[1])
+        nome = str(linha[2])
+        nascimento= str(linha[3])
+        altura = str(linha[4])
+        peso = str(linha[5])
+
+        aluno = {'id': id_aluno, 'matricula': matricula_aluno, 'nome': nome, 'nascimento': nascimento, 'altura': altura, 'peso': peso}
+        # Adicionar a aluno a lista.
+        Lista_Alunos.append(aluno)
+
+    conn.close()
+
+    resp = jsonify(Aluno_Pesquisado=aluno)
+    resp.status_code = 201
+
+    return resp
+
+@app.route('/alunos/<int:id>', methods=['GET'])
 def consultarAlunoPorId(id):
     pessoa = []
 
@@ -306,6 +366,35 @@ def listarNutricionista():
 
     return resp
 
+@app.route('/nutricionista/nome/<nome>', methods=['GET'])
+def consultarNutricionistaPorNome(nome):
+
+    conn = sqlite3.connect('bd_nutrif.db')
+    cursor = conn.cursor()
+
+    # lendo os dados
+    query = "SELECT * FROM tb_nutricionista WHERE nome LIKE '%{}%'".format(nome)
+    cursor.execute(query)
+
+    Nutricionistas = []
+
+    for linha in cursor.fetchall():
+        id = str(linha[0])
+        nome = str(linha[1])
+        siape = str(linha[2])
+        CRN = str(linha[3])
+        # Pessoa.
+        nutric = {'id': id, 'nome': nome, 'siape': siape,'CRN': CRN}
+        # Adicionar a nutricionista a lista.
+        Nutricionistas.append(nutric)
+
+    conn.close()
+
+    resp = jsonify(Nutricionista_Pesquisado=nutric)
+    resp.status_code = 201
+
+    return resp
+
 @app.route("/nutricionista/<int:id>", methods=['GET'])#GET: retornar a entidade por id.
 def consultarNutricionistaPorID(id):
 
@@ -418,6 +507,36 @@ def listarRefeicao():
     conn.close()
 
     resp = jsonify(Lista_de_refeicoes=refeicoes)
+    resp.status_code = 201
+
+    return resp
+
+@app.route('/refeicao/nome/<nome>', methods=['GET'])
+def consultarRefeicaoPorNome(nome):
+
+    conn = sqlite3.connect('bd_nutrif.db')
+    cursor = conn.cursor()
+
+    # lendo os dados
+    query = "SELECT * FROM tb_refeicao WHERE nome LIKE '%{}%'".format(nome)
+    cursor.execute(query)
+
+    refeicoes = []
+
+    for linha in cursor.fetchall():
+        id_refeicao = str(linha[0])
+        nome = str(linha[1])
+        hr_inicial = str(linha[2])
+        hr_final = str(linha[3])
+        custo = float(linha[4])
+        # Pessoa.
+        refeicao = {'id_refeicao': id_refeicao, 'nome': nome, 'hr_inicial': hr_inicial,'hr_final': hr_final, 'custo': custo}
+        # Adicionar a refeição a lista.
+        refeicoes.append(refeicao)
+
+    conn.close()
+
+    resp = jsonify(Refeicao_Pesquisada=refeicao)
     resp.status_code = 201
 
     return resp
