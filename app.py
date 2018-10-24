@@ -1,36 +1,55 @@
 from flask import Flask,request
 from flask import jsonify
 import sqlite3
+import MySQLdb
 
 app = Flask(__name__)
+
+def conectaBanco():
+
+    HOST = "localhost"
+    USER = "root"
+    PASSWD = "ifpbinfo"
+    BANCO = "nutrif"
+
+    try:
+        conecta = MySQLdb.connect(HOST, USER, PASSWD)
+        conecta.select_db(BANCO)
+
+    except MySQLdb.Error:
+        print ("Erro: O banco especificado nao foi encontrado...")
+        menu = input()
+        os.system("clear")
+        opcaoUsuario()
+
+    return conecta
+
 
 @app.route('/campi', methods=['POST']) #POST: cadastrar.
 def cadastrarCampus():
 
-    print("Cadastrar o campus")
     req_data = request.get_json()
 
-    nome_campus = str(req_data['nome_campus'])
     cidade = str(req_data['cidade'])
     sigla = str(req_data['sigla'])
 
-    print(nome_campus, cidade, sigla)
-
     # Persistência dos dados
-    conn = sqlite3.connect('bd_nutrif.db')
-    cursor = conn.cursor()
+    conecta = conectaBanco()
+    cursor = conecta.cursor()
 
-    # inserindo dados na tabela
-    cursor.execute("""
-      INSERT INTO tb_campus (nome_campus, cidade, sigla)
-      VALUES (?,?,?)
-    """, (nome_campus, cidade, sigla))
+    try:
+        # inserindo dados na tabela
+        cursor.execute("""
+          INSERT INTO tb_campus (cidade, sigla)
+          VALUES (?,?)
+        """, (cidade, sigla))
+        conecta.commit()
 
-    conn.commit()
+    except MySQLdb.Error as e:
+        print ("Erro")
+        print(e)
 
-    print('Dados inseridos com sucesso.')
-
-    conn.close()
+    conecta.close()
 
     resp = jsonify()
     resp.status_code = 201

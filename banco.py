@@ -45,13 +45,12 @@ CREATE TABLE tb_nutricionista (
 cursor.execute("""
 CREATE TABLE tb_refeicao (
         id_refeicao INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+        fk_id_campus INTEGER NOT NULL,
         nome TEXT NOT NULL,
         hr_inicial TIME NOT NULL,
         hr_final TIME NOT NULL,
         custo REAL NOT NULL,
-        FOREIGN KEY(id_refeicao) REFERENCES tb_campus(id_campus)
-
-
+        FOREIGN KEY(fk_id_campus) REFERENCES tb_campus(id_campus)
 );
 """)
 
